@@ -48,18 +48,22 @@ class ArticleResource extends Resource
                     ->schema([
                         Forms\Components\FileUpload::make('thumbnail_url')
                             ->image()
-                            ->directory('thumbnails'),
+                            ->directory('thumbnails')
+                            ->columnSpanFull(),
 
                         Forms\Components\Select::make('category_id')
                             ->relationship('category', 'name')
-                            ->required(),
+                            ->required()
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\Select::make('author_id')
-                            ->relationship('author', 'name'),
+                            ->relationship('author', 'name')
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\TagsInput::make('tags')
-                            ->placeholder('Add tags'),
-                    ])->columns(2),
+                            ->placeholder('Add tags')
+                            ->columnSpanFull(),
+                    ])->columns(['default' => 1, 'sm' => 2]),
 
                 Forms\Components\Section::make('Publishing Options')
                     ->schema([
@@ -70,34 +74,41 @@ class ArticleResource extends Resource
                                 'archived' => 'Archived',
                             ])
                             ->default('draft')
-                            ->required(),
+                            ->required()
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\DateTimePicker::make('published_at')
-                            ->label('Publish Date'),
+                            ->label('Publish Date')
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\Toggle::make('is_featured')
-                            ->label('Featured Article'),
+                            ->label('Featured Article')
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\Toggle::make('is_breaking')
-                            ->label('Breaking News'),
+                            ->label('Breaking News')
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
 
                         Forms\Components\TextInput::make('read_time')
                             ->numeric()
                             ->default(3)
-                            ->suffix('min'),
-                    ])->columns(3),
+                            ->suffix('min')
+                            ->columnSpan(['default' => 2, 'sm' => 1]),
+                    ])->columns(['default' => 1, 'sm' => 2, 'md' => 3]),
 
                 Forms\Components\Section::make('SEO Settings')
                     ->schema([
                         Forms\Components\TextInput::make('meta_title')
                             ->maxLength(60)
-                            ->helperText('Max 60 characters'),
+                            ->helperText('Max 60 characters')
+                            ->columnSpanFull(),
 
                         Forms\Components\Textarea::make('meta_description')
                             ->maxLength(160)
                             ->helperText('Max 160 characters')
-                            ->rows(2),
-                    ])->columns(2),
+                            ->rows(2)
+                            ->columnSpanFull(),
+                    ])->columns(['default' => 1, 'sm' => 2]),
             ]);
     }
 
@@ -107,16 +118,19 @@ class ArticleResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('thumbnail_url')
                     ->square()
-                    ->size(50),
+                    ->size(50)
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('title')
                     ->searchable()
                     ->limit(50)
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
 
                 Tables\Columns\TextColumn::make('category.name')
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -124,20 +138,25 @@ class ArticleResource extends Resource
                         'warning' => 'draft',
                         'success' => 'published',
                         'danger' => 'archived',
-                    ]),
+                    ])
+                    ->toggleable(),
 
                 Tables\Columns\IconColumn::make('is_featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\IconColumn::make('is_breaking')
-                    ->boolean(),
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('views')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

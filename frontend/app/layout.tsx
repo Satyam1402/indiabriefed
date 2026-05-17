@@ -6,7 +6,12 @@ import Footer from "@/components/Footer";
 import BreakingNews from "@/components/BreakingNews";
 import Chatbot from "@/components/Chatbot/Chatbot";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial']
+});
 
 export const metadata: Metadata = {
   title: "IndiaBriefed - Your Daily Dose of India News",

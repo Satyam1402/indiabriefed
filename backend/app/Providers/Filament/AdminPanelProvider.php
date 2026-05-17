@@ -30,6 +30,18 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Red,
             ])
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->collapsibleNavigationGroups(true)
+            ->topNavigation(false)
+            ->maxContentWidth('full')
+            ->font('Inter')
+            ->favicon('/favicon.ico')
+            ->renderHook(
+                'panels::styles.before',
+                fn () => '<link rel="stylesheet" href="' . asset('css/filament-mobile.css') . '">' .
+                         '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">'
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

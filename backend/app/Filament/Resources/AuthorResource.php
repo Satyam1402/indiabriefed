@@ -24,15 +24,17 @@ class AuthorResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Forms\Components\Textarea::make('bio')
                     ->maxLength(1000)
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('photo_url')
                     ->image()
                     ->directory('authors')
-                    ->maxSize(2048),
-            ]);
+                    ->maxSize(2048)
+                    ->columnSpanFull(),
+            ])->columns(['default' => 1, 'sm' => 2]);
     }
 
     public static function table(Table $table): Table
@@ -40,10 +42,12 @@ class AuthorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('photo_url')
-                    ->circular(),
+                    ->circular()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('articles_count')
                     ->counts('articles')
                     ->label('Articles')

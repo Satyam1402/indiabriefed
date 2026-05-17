@@ -25,10 +25,12 @@ class RecentArticles extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->limit(50)
-                    ->searchable(),
+                    ->searchable()
+                    ->wrap(),
                 
                 Tables\Columns\TextColumn::make('category.name')
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(),
                 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -36,14 +38,17 @@ class RecentArticles extends BaseWidget
                         'warning' => 'draft',
                         'success' => 'published',
                         'danger' => 'archived',
-                    ]),
+                    ])
+                    ->toggleable(),
                 
                 Tables\Columns\TextColumn::make('views')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
             ]);
     }
 }

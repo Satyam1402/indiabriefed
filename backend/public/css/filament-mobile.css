@@ -1,0 +1,94 @@
+/* Mobile Responsive Styles for Filament Admin Panel */
+
+/* Mobile: 320px - 767px */
+@media (max-width: 767px) {
+    /* Sidebar improvements */
+    .fi-sidebar {
+        width: 100% !important;
+    }
+    
+    /* Table responsive */
+    .fi-ta-table {
+        font-size: 0.875rem;
+    }
+    
+    .fi-ta-cell {
+        padding: 0.5rem !important;
+    }
+    
+    /* Form fields stack properly */
+    .fi-fo-field-wrp {
+        width: 100% !important;
+    }
+    
+    /* Stats cards stack */
+    .fi-wi-stats-overview-stat {
+        width: 100% !important;
+    }
+    
+    /* Action buttons */
+    .fi-ac-btn-group {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Header actions */
+    .fi-header-actions {
+        flex-wrap: wrap !important;
+    }
+    
+    /* Modal full width on mobile */
+    .fi-modal-window {
+        width: 95vw !important;
+        max-width: 95vw !important;
+    }
+    
+    /* Reduce padding */
+    .fi-main {
+        padding: 1rem !important;
+    }
+    
+    /* Table actions dropdown */
+    .fi-ta-actions {
+        position: static !important;
+    }
+}
+
+/* Tablet: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .fi-sidebar {
+        width: 16rem !important;
+    }
+    
+    .fi-main {
+        padding: 1.5rem !important;
+    }
+    
+    .fi-wi-stats-overview-stat {
+        width: calc(50% - 0.5rem) !important;
+    }
+}
+
+/* Touch device improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .fi-btn,
+    .fi-link,
+    .fi-ta-action {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+    
+    /* Better spacing for touch */
+    .fi-ta-row {
+        padding: 0.75rem 0 !important;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .fi-sidebar {
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+}

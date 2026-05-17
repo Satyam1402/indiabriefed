@@ -27,17 +27,20 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null)
+                    ->columnSpan(['default' => 2, 'sm' => 1]),
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->columnSpan(['default' => 2, 'sm' => 1]),
                 Forms\Components\Textarea::make('description')
                     ->maxLength(500)
                     ->columnSpanFull(),
                 Forms\Components\ColorPicker::make('color')
-                    ->default('#c62828'),
-            ]);
+                    ->default('#c62828')
+                    ->columnSpanFull(),
+            ])->columns(['default' => 1, 'sm' => 2]);
     }
 
     public static function table(Table $table): Table
@@ -46,11 +49,14 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\ColorColumn::make('color'),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ColorColumn::make('color')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('articles_count')
                     ->counts('articles')
                     ->label('Articles')

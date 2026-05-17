@@ -1,0 +1,66 @@
+name: Deploy Full Stack to VPS
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy Backend to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          echo "🚀 Starting Backend Deployment..."
+          cd /var/www/indiabriefed/backend
+          git pull origin main || git pull origin master
+          composer install --optimize-autoloader --no-dev
+          php artisan migrate --force
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          chown -R www-data:www-data /var/www/indiabriefed/backend
+          chmod -R 755 /var/www/indiabriefed/backend
+          chmod -R 775 /var/www/indiabriefed/backend/storage
+          chmod -R 775 /var/www/indiabriefed/backend/bootstrap/cache
+          systemctl restart php8.2-fpm
+          echo "✅ Backend Deployment Complete!"
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy Frontend to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          echo "🚀 Starting Frontend Deployment..."
+          cd /var/www/indiabriefed/frontend
+          git pull origin main || git pull origin master
+          npm install
+          npm run build
+          pm2 restart indiabriefed-frontend || pm2 start npm --name "indiabriefed-frontend" -- start
+          pm2 save
+          echo "✅ Frontend Deployment Complete!"

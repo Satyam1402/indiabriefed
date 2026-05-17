@@ -1,0 +1,59 @@
+name: Deploy Backend to VPS
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          echo "🚀 Starting Backend Deployment..."
+          
+          # Navigate to project directory
+          cd /var/www/indiabriefed/backend
+          
+          # Pull latest code
+          git pull origin main || git pull origin master
+          
+          # Install/Update Composer dependencies
+          composer install --optimize-autoloader --no-dev
+          
+          # Run migrations
+          php artisan migrate --force
+          
+          # Clear and cache config
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan route:clear
+          php artisan view:clear
+          
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          
+          # Set permissions
+          chown -R www-data:www-data /var/www/indiabriefed/backend
+          chmod -R 755 /var/www/indiabriefed/backend
+          chmod -R 775 /var/www/indiabriefed/backend/storage
+          chmod -R 775 /var/www/indiabriefed/backend/bootstrap/cache
+          
+          # Restart PHP-FPM
+          systemctl restart php8.2-fpm
+          
+          echo "✅ Backend Deployment Complete!"
